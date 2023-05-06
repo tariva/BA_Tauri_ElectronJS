@@ -1,21 +1,69 @@
-const { invoke } = window.__TAURI__.tauri;
+// Copyright 2019-2023 Tauri Programme within The Commons Conservancy
+// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: MIT
 
-let greetInputEl;
-let greetMsgEl;
+// Create web worker
+const THRESHOLD = 10000000;
+const worker = new Worker("worker.js");
+/** @type {HTMLButtonElement} */
+const start = document.getElementById("start");
+/** @type {HTMLParagraphElement} */
+const statusEl = document.getElementById("status");
+const results = document.getElementById("results");
 
-async function greet() {
-  // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
-  greetMsgEl.textContent = await invoke("greet", { name: greetInputEl.value });
-}
+const ITERATIONS = 1;
 
-window.addEventListener("DOMContentLoaded", () => {
-  greetInputEl = document.querySelector("#greet-input");
-  greetMsgEl = document.querySelector("#greet-msg");
-  document
-    .querySelector("#greet-button")
-    .addEventListener("click", () => greet());
-  document.querySelector("#greet-button");
-  addEventListener("keypress", (event) => {
-    event.key === "Enter" ? (event.preventDefault(), greet()) : null;
+let resolver;
+// on document load
+document.addEventListener("DOMContentLoaded", () => {
+  statusEl.innerHTML = "Ready to start";
+  results.innerHTML = "Results:";
+});
+const onMessage = (message) => {
+  // Update the UI
+  let prefix = "[Calculating]";
+
+  if (message.data.status === "done") {
+    // tell tauri that we are done
+    console.log(message);
+  }
+
+  statusEl.innerHTML += `<br>${prefix} Found <code>${message.data.count}</code> prime numbers in <code>${message.data.time}ms</code>`;
+
+  if (message.data.status === "done") {
+    resolver(message.data.time);
+  }
+};
+
+worker.addEventListener("message", onMessage);
+
+const benchmark = () => {
+  return new Promise((resolve) => {
+    const startTime = Date.now();
+    resolver = resolve;
+    worker.postMessage({ value: THRESHOLD, startTime });
   });
+};
+
+const calculate = async () => {
+  let total = 0;
+
+  for (let i = 0; i < ITERATIONS; i++) {
+    const result = await benchmark();
+    total += result;
+  }
+
+  const average = total / ITERATIONS;
+
+  results.innerHTML += `<br>Average time: ${average}ms`;
+  //enable button
+  start.removeAttribute("disabled");
+};
+// on button click start the calculation only start once
+start.addEventListener("click", () => {
+  if (start.getAttribute("disabled") !== "disabled") {
+    start.setAttribute("disabled", "disabled");
+    statusEl.innerHTML = "Calculating...";
+    calculate();
+  }
 });
