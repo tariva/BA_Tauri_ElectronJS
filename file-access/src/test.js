@@ -11,7 +11,7 @@ const mkdirAsync = util.promisify(fs.mkdir);
 const RESULTS_FILE = `results.csv`;
 const PARALLEL_WORKERS = 100;
 const RERUNS = 5;
-const ROOT = electron.require("ROOT");
+const ROOT = electron.require("ROOT"); // this is the root directory of the project
 const FIXTURES_PATH = join(ROOT, "fixtures");
 const SOURCES_PATH = join(ROOT, "source-files");
 
