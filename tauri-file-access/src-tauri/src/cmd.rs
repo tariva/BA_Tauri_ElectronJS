@@ -1,6 +1,8 @@
+use std::env::current_dir;
 use std::fs;
 use std::io::Read;
 use std::io::Write;
+use std::path::Path;
 use std::path::PathBuf;
 
 #[derive(serde::Deserialize)]
@@ -63,4 +65,16 @@ pub fn create_dir(args: CreateDirArgs) -> Result<(), String> {
 #[tauri::command]
 pub fn remove_dir(args: RemoveDirArgs) -> Result<(), String> {
     fs::remove_dir_all(args.path).map_err(|e| e.to_string())
+}
+
+#[tauri::command]
+pub fn get_cwd() -> Result<String, String> {
+    match current_dir() {
+        Ok(cwd) => Ok(cwd.to_string_lossy().to_string()),
+        Err(e) => Err(e.to_string()),
+    }
+}
+#[tauri::command]
+pub fn path_exists(path: String) -> bool {
+    Path::new(&path).exists()
 }

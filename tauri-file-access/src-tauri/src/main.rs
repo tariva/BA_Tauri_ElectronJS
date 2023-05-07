@@ -10,7 +10,9 @@ fn main() {
             cmd::write_file,
             cmd::read_dir,
             cmd::create_dir,
-            cmd::remove_dir
+            cmd::remove_dir,
+            cmd::get_cwd,
+            cmd::path_exists
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

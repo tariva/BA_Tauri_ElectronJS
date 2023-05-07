@@ -10,26 +10,29 @@ const {
   mkdirAsync,
   deleteDir,
   join,
+  path_exists,
   dirname,
-} = tauriCommands;
+  getRootDir,
+} = await tauriCommands;
 
 const RESULTS_FILE = `results.csv`;
 const PARALLEL_WORKERS = 100;
 const RERUNS = 5;
-const ROOT = __dirname; // this is the root directory of the project
-const FIXTURES_PATH = join(ROOT, "fixtures");
-const SOURCES_PATH = join(ROOT, "source-files");
+const ROOT = await getRootDir();
+console.log(ROOT);
+const FIXTURES_PATH = await join(ROOT, "fixtures");
+const SOURCES_PATH = await join(ROOT, "source-files");
 const FILES = 1000;
+console.log(SOURCES_PATH);
 /**
  *
  * @param {string} folderName
  */
 const readFolderContent = async (folderName) => {
   const start = Date.now();
-  const sourceFolder = join(FIXTURES_PATH, folderName);
-  const files = (await readdirAsync(sourceFolder)).map((file) => {
-    return join(sourceFolder, file);
-  });
+  const sourceFolder = await join(FIXTURES_PATH, folderName);
+  const files = await readdirAsync(sourceFolder);
+  console.log(files);
   const end = Date.now();
 
   const time = end - start;
@@ -42,6 +45,8 @@ const readFolderContent = async (folderName) => {
  * @param {string[]} files
  */
 const readSequentially = async (files) => {
+  console.log(readSequentially);
+  console.log(files);
   const start = Date.now();
 
   for (let i = 0; i < files.length; i++) {
@@ -136,7 +141,7 @@ const writeConcurrently = async (files, content) => {
  */
 const writeFiles = async (folderName) => {
   const start = Date.now();
-  const targetFolder = join(FIXTURES_PATH, folderName);
+  const targetFolder = await join(FIXTURES_PATH, folderName);
 
   try {
     await mkdirAsync(targetFolder);
@@ -147,11 +152,11 @@ const writeFiles = async (folderName) => {
   const files = [];
 
   for (let i = 0; i < FILES; i++) {
-    files.push(join(targetFolder, `${folderName}-${i}.txt`));
+    files.push(await join(targetFolder, `${folderName}-${i}.txt`));
   }
 
   const content = await readAsync(
-    join(SOURCES_PATH, `${folderName}.txt`),
+    await join(SOURCES_PATH, `${folderName}.txt`),
     "utf-8"
   );
 
@@ -165,11 +170,11 @@ const writeFiles = async (folderName) => {
 };
 
 const deleteFixtures = async () => {
-  const exists = fs.existsSync(FIXTURES_PATH);
+  const exists = await path_exists(FIXTURES_PATH);
 
   if (exists) {
     try {
-      await deleteDir(["fixtures"], { force: true, cwd: ROOT });
+      await deleteDir(FIXTURES_PATH);
     } catch (e) {
       console.log(e);
     }
@@ -241,7 +246,7 @@ const run = async () => {
       calculateAverage(results);
 
     await writeAsync(
-      join(ROOT, "..", `tauri-${size}-${RESULTS_FILE}`),
+      await join(ROOT, "..", `tauri-${size}-${RESULTS_FILE}`),
       `Action,Time elapsed (ms)
 Write files,${timeToWrite}
 Read dir,${timeToList}

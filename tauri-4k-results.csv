@@ -1,0 +1,5 @@
+Action,Time elapsed (ms)
+Write files,1264.6
+Read dir,18
+Sequential read,879.4
+Parallel read,492.2
