@@ -13,14 +13,25 @@ pub struct Message {
 
 fn main() {
     tauri::Builder::default()
-       .setup(|app| {
-        let handle = app.handle();
-            // listen to the `asynchronous-message` (emitted on any window)
+        .setup(|app| {
+            let handle = app.handle();
+
+            // Listen to the `asynchronous-message` (emitted on any window)
             app.listen_global("asynchronous-message", move |event| {
-                let payload: &str = event.payload().unwrap();
-                let message: Message = from_str(payload).expect("failed to deserialize payload");
-                // emit the `asynchronous-reply` event to all webview windows on the frontend
-                handle.emit_all("asynchronous-reply", &message).expect("failed to emit event");
+                match event.payload() {
+                    Some(payload) => {
+                        match from_str::<Message>(payload) {
+                            Ok(message) => {
+                                // Emit the `asynchronous-reply` event to all webview windows on the frontend
+                                if let Err(e) = handle.emit_all("asynchronous-reply", &message) {
+                                    eprintln!("Failed to emit event: {}", e);
+                                }
+                            }
+                            Err(e) => eprintln!("Failed to deserialize payload: {}", e),
+                        }
+                    }
+                    None => eprintln!("Received event with no payload"),
+                }
             });
 
             Ok(())

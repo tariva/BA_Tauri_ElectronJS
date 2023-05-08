@@ -62,16 +62,16 @@ const startSequential = () => {
   const totalMessages = parseInt(document.getElementById('messages').value);
   let received = 0;
   const messages = [];
-  const startTime = performance.now();
+  const startTime = Date.now();
 
   const sendMessage = (id) => {
-    const message = { id, start: performance.now(), duration: 0 };
+    const message = { id, start: Date.now(), duration: 0 };
 
     comms.sendMessage(message);
   };
 
   const onMessage = ( arg) => {
-    const end = performance.now();
+    const end = Date.now();
     const message = arg;
 
     if (!message) {
