@@ -2,6 +2,8 @@ use std::env::current_dir;
 use std::fs;
 use std::io::{Read, Write};
 use std::path::{Path, PathBuf};
+use tokio::io::{self, AsyncReadExt};
+use tokio::fs::File;
 
 /// Struct to hold the path for reading a file
 #[derive(serde::Deserialize)]
@@ -36,10 +38,13 @@ pub struct RemoveDirArgs {
 
 /// Read the content of a file specified by the path in `ReadFileArgs`
 #[tauri::command]
-pub fn read_file(args: ReadFileArgs) -> Result<String, String> {
-    let mut file = fs::File::open(args.path).map_err(|e| e.to_string())?;
+pub async fn read_file(args: ReadFileArgs) -> Result<String, String> {
+    let mut file = File::open(args.path)
+        .await
+        .map_err(|e| e.to_string())?;
     let mut contents = String::new();
     file.read_to_string(&mut contents)
+        .await
         .map_err(|e| e.to_string())?;
     Ok(contents)
 }
