@@ -19,11 +19,11 @@ const RESULTS_FILE = `results.csv`;
 const PARALLEL_WORKERS = 100;
 const RERUNS = 5;
 const ROOT = await getRootDir();
-console.log(ROOT);
+//console.log(ROOT);
 const FIXTURES_PATH = await join(ROOT, "fixtures");
 const SOURCES_PATH = await join(ROOT, "source-files");
 const FILES = 1000;
-console.log(SOURCES_PATH);
+//console.log(SOURCES_PATH);
 /**
  *
  * @param {string} folderName
@@ -173,7 +173,7 @@ const deleteFixtures = async () => {
     try {
       await deleteDir(FIXTURES_PATH);
     } catch (e) {
-      console.log(e);
+      console.error(e);
     }
   }
 

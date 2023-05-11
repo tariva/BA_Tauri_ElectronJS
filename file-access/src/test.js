@@ -168,7 +168,7 @@ const deleteFixtures = async () => {
     try {
       await del(["fixtures"], { force: true, cwd: ROOT });
     } catch (e) {
-      console.log(e);
+      console.error(e);
     }
   }
 

@@ -23,7 +23,7 @@ const startBurst = () => {
   const messages = [];
 
   const onMessage = (arg) => {
-    console.log("onMessage");
+    //console.log("onMessage");
     const end = Date.now();
     const message = arg;
 
