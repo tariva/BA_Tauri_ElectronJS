@@ -11,7 +11,7 @@ const start = document.getElementById("start");
 const statusEl = document.getElementById("status");
 const results = document.getElementById("results");
 
-const ITERATIONS = 1;
+const ITERATIONS = 15;
 
 let resolver;
 // on document load
@@ -24,11 +24,11 @@ const onMessage = (message) => {
   let prefix = "[Calculating]";
 
   if (message.data.status === "done") {
-    // tell tauri that we are done
-    console.log(message);
+    prefix = `[Done]`;
+    start.removeAttribute("disabled");
   }
 
-  statusEl.innerHTML += `<br>${prefix} Found <code>${message.data.count}</code> prime numbers in <code>${message.data.time}ms</code>`;
+  statusEl.innerHTML = `${prefix} Found <code>${message.data.count}</code> prime numbers in <code>${message.data.time}ms</code>`;
 
   if (message.data.status === "done") {
     resolver(message.data.time);
@@ -55,9 +55,7 @@ const calculate = async () => {
 
   const average = total / ITERATIONS;
 
-  results.innerHTML += `<br>Average time: ${average}ms`;
-  //enable button
-  start.removeAttribute("disabled");
+  results.innerHTML = `<br>Average time: ${average}ms`;
 };
 // on button click start the calculation only start once
 start.addEventListener("click", () => {

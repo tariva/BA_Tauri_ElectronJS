@@ -4,10 +4,10 @@ const worker = new Worker("./worker.js");
 /** @type {HTMLButtonElement} */
 const start = document.getElementById("start");
 /** @type {HTMLParagraphElement} */
-const status = document.getElementById("status");
+const statusEl = document.getElementById("status");
 const results = document.getElementById("results");
 
-const ITERATIONS = 5;
+const ITERATIONS = 15;
 
 let resolver;
 
@@ -20,7 +20,7 @@ const onMessage = (message) => {
     start.removeAttribute("disabled");
   }
 
-  status.innerHTML = `${prefix} Found <code>${message.data.count}</code> prime numbers in <code>${message.data.time}ms</code>`;
+  statusEl.innerHTML = `${prefix} Found <code>${message.data.count}</code> prime numbers in <code>${message.data.time}ms</code>`;
 
   if (message.data.status === "done") {
     resolver(message.data.time);
@@ -38,7 +38,6 @@ const benchmark = () => {
 };
 
 const calculate = async () => {
-  start.setAttribute("disabled", "disabled");
   let total = 0;
 
   for (let i = 0; i < ITERATIONS; i++) {
@@ -49,6 +48,14 @@ const calculate = async () => {
   const average = total / ITERATIONS;
 
   results.innerText = `Average time: ${average}ms`;
+  //enable button
+  start.removeAttribute("disabled");
 };
-
-start.addEventListener("click", calculate);
+// on button click start the calculation only start once
+start.addEventListener("click", () => {
+  if (start.getAttribute("disabled") !== "disabled") {
+    start.setAttribute("disabled", "disabled");
+    statusEl.innerHTML = "Calculating...";
+    calculate();
+  }
+});
