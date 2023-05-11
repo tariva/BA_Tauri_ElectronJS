@@ -16,6 +16,14 @@
     "name": "Ivan Tarskich",
     "email": "ivan.tarskich@edu.fh-joanneum.at"
   },
+  "build": {
+    "extraResources": [
+      {
+        "from": "source-files",
+        "to": "source-files" 
+      }
+    ]
+  },
   "license": "MIT",
   "dependencies": {
     "del": "^5.1.0",

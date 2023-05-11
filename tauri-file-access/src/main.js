@@ -32,7 +32,6 @@ const readFolderContent = async (folderName) => {
   const start = Date.now();
   const sourceFolder = await join(FIXTURES_PATH, folderName);
   const files = await readdirAsync(sourceFolder);
-  console.log(files);
   const end = Date.now();
 
   const time = end - start;
@@ -45,8 +44,6 @@ const readFolderContent = async (folderName) => {
  * @param {string[]} files
  */
 const readSequentially = async (files) => {
-  console.log(readSequentially);
-  console.log(files);
   const start = Date.now();
 
   for (let i = 0; i < files.length; i++) {
@@ -146,7 +143,7 @@ const writeFiles = async (folderName) => {
   try {
     await mkdirAsync(targetFolder);
   } catch (e) {
-    console.log(e);
+    console.error(e);
   }
 
   const files = [];

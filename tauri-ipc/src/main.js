@@ -1,5 +1,5 @@
-const SEND_CHANNEL = 'asynchronous-message';
-const RECEIVE_CHANNEL = 'asynchronous-reply';
+const SEND_CHANNEL = "asynchronous-message";
+const RECEIVE_CHANNEL = "asynchronous-reply";
 const { emit, listen } = window.__TAURI__.event;
 window.comms = {
   sendMessage: (message) => {
@@ -17,13 +17,13 @@ window.comms = {
 };
 
 const startBurst = () => {
-  const totalMessages = parseInt(document.getElementById('messages').value);
+  const totalMessages = parseInt(document.getElementById("messages").value);
   let received = 0;
   const startTime = Date.now();
   const messages = [];
 
-  const onMessage = ( arg) => {
-    console.log("onMessage")
+  const onMessage = (arg) => {
+    console.log("onMessage");
     const end = Date.now();
     const message = arg;
 
@@ -31,8 +31,7 @@ const startBurst = () => {
     messages.push(message);
 
     received++;
-    // log status
-    console.log(received+"/"+totalMessages)
+
     if (received === totalMessages) {
       const totalTime = end - startTime;
       let durations = 0;
@@ -43,9 +42,13 @@ const startBurst = () => {
         durations += message.duration;
       }
       const average = durations / messages.length;
-      document.getElementById('results').innerText = `Total: ${totalTime.toFixed(2)}ms - avg message roundtrip: ${average.toFixed(2)}ms`;
+      document.getElementById(
+        "results"
+      ).innerText = `Total: ${totalTime.toFixed(
+        2
+      )}ms - avg message roundtrip: ${average.toFixed(2)}ms`;
     }
-  }
+  };
 
   comms.onMessage(onMessage);
 
@@ -56,22 +59,22 @@ const startBurst = () => {
   }
 };
 
-document.getElementById('start').addEventListener('click', startBurst);
+document.getElementById("start").addEventListener("click", startBurst);
 
 const startSequential = () => {
-  const totalMessages = parseInt(document.getElementById('messages').value);
+  const totalMessages = parseInt(document.getElementById("messages").value);
   let received = 0;
   const messages = [];
-  const startTime = Date.now();
+  const startTime = performance.now();
 
   const sendMessage = (id) => {
-    const message = { id, start: Date.now(), duration: 0 };
+    const message = { id, start: performance.now(), duration: 0 };
 
     comms.sendMessage(message);
   };
 
-  const onMessage = ( arg) => {
-    const end = Date.now();
+  const onMessage = (arg) => {
+    const end = performance.now();
     const message = arg;
 
     if (!message) {
@@ -87,13 +90,17 @@ const startSequential = () => {
       const totalTime = end - startTime;
       let durations = 0;
 
-      comms.clear();
+      // comms.clear();
 
       for (const message of messages) {
         durations += message.duration;
       }
       const average = durations / messages.length;
-      document.getElementById('results-sequential').innerText = `Total: ${totalTime.toFixed(2)}ms - avg message roundtrip: ${average.toFixed(2)}ms`;
+      document.getElementById(
+        "results-sequential"
+      ).innerText = `Total: ${totalTime.toFixed(
+        2
+      )}ms - avg message roundtrip: ${average.toFixed(2)}ms`;
     } else {
       sendMessage(received + 1);
     }
@@ -104,4 +111,6 @@ const startSequential = () => {
   sendMessage(received + 1);
 };
 
-document.getElementById('start-sequential').addEventListener('click', startSequential);
+document
+  .getElementById("start-sequential")
+  .addEventListener("click", startSequential);

@@ -1,5 +1,5 @@
 const startBurst = () => {
-  const totalMessages = parseInt(document.getElementById('messages').value);
+  const totalMessages = parseInt(document.getElementById("messages").value);
   let received = 0;
   const startTime = Date.now();
   const messages = [];
@@ -23,9 +23,13 @@ const startBurst = () => {
         durations += message.duration;
       }
       const average = durations / messages.length;
-      document.getElementById('results').innerText = `Total: ${totalTime.toFixed(2)}ms - avg message roundtrip: ${average.toFixed(2)}ms`;
+      document.getElementById(
+        "results"
+      ).innerText = `Total: ${totalTime.toFixed(
+        2
+      )}ms - avg message roundtrip: ${average.toFixed(2)}ms`;
     }
-  }
+  };
 
   comms.onMessage(onMessage);
 
@@ -36,10 +40,10 @@ const startBurst = () => {
   }
 };
 
-document.getElementById('start').addEventListener('click', startBurst);
+document.getElementById("start").addEventListener("click", startBurst);
 
 const startSequential = () => {
-  const totalMessages = parseInt(document.getElementById('messages').value);
+  const totalMessages = parseInt(document.getElementById("messages").value);
   let received = 0;
   const messages = [];
   const startTime = performance.now();
@@ -67,13 +71,17 @@ const startSequential = () => {
       const totalTime = end - startTime;
       let durations = 0;
 
-      comms.clear();
+      // comms.clear();
 
       for (const message of messages) {
         durations += message.duration;
       }
       const average = durations / messages.length;
-      document.getElementById('results-sequential').innerText = `Total: ${totalTime.toFixed(2)}ms - avg message roundtrip: ${average.toFixed(2)}ms`;
+      document.getElementById(
+        "results-sequential"
+      ).innerText = `Total: ${totalTime.toFixed(
+        2
+      )}ms - avg message roundtrip: ${average.toFixed(2)}ms`;
     } else {
       sendMessage(received + 1);
     }
@@ -84,4 +92,6 @@ const startSequential = () => {
   sendMessage(received + 1);
 };
 
-document.getElementById('start-sequential').addEventListener('click', startSequential);
+document
+  .getElementById("start-sequential")
+  .addEventListener("click", startSequential);
