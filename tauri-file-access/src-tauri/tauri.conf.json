@@ -1,7 +1,7 @@
 {
   "build": {
     "beforeDevCommand": "cd src && vite",
-    "beforeBuildCommand": "cd src && vite build",
+    "beforeBuildCommand": "cd src && vite build --config vite.cofig.js",
     "devPath": "http://localhost:5173",
     "distDir": "../dist",
     "withGlobalTauri": true
@@ -33,7 +33,7 @@
         "icons/icon.icns",
         "icons/icon.ico"
       ],
-      "identifier": "fh.jo.com",
+      "identifier": "test.tauri.file",
       "targets": "all"
     },
     "security": {

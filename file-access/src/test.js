@@ -138,7 +138,7 @@ const writeFiles = async (folderName) => {
   try {
     await mkdirAsync(targetFolder);
   } catch (e) {
-    console.log(e);
+    console.error(e);
   }
 
   const files = [];

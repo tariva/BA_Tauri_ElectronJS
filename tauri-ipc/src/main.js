@@ -1,5 +1,5 @@
-const SEND_CHANNEL = 'asynchronous-message';
-const RECEIVE_CHANNEL = 'asynchronous-reply';
+const SEND_CHANNEL = "asynchronous-message";
+const RECEIVE_CHANNEL = "asynchronous-reply";
 const { emit, listen } = window.__TAURI__.event;
 
 window.comms = {

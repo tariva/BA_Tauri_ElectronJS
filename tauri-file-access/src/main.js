@@ -59,7 +59,7 @@ async function writeFiles(folderName) {
   try {
     await mkdirAsync(targetFolder);
   } catch (e) {
-    console.log(e);
+    console.error(e);
   }
   const files =[]
   for (let i = 0; i < FILES; i++) {
